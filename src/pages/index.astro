@@ -1,49 +1,614 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+
+// Get latest 3 blog posts
+const posts = (await getCollection("blog"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        font-family: "Manrope", sans-serif;
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        width: 100%;
+      }
+
+      .hero {
+        text-align: center;
+        padding: 4rem 2rem;
+        background:
+          linear-gradient(
+            135deg,
+            rgba(102, 126, 234, 0.2) 0%,
+            rgba(118, 75, 162, 0.8) 100%
+          ),
+          url("/bg.jpg") top/cover no-repeat;
+        color: white;
+        margin-bottom: 3rem;
+        border-radius: 1rem;
+        position: relative;
+      }
+
+      .hero h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(45deg, #fff, #f0f0f0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      .skills {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+
+      .skill-tag {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.9rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+
+      .skill-tag:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .stats-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin: 4rem 0;
+        padding: 3rem 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 1rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stats-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+        background-size: 200% 100%;
+        animation: gradient-move 3s ease-in-out infinite;
+      }
+
+      @keyframes gradient-move {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 1.5rem;
+      }
+
+      .stat-number {
+        font-size: 3rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        color: #666;
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .featured-projects {
+        margin: 4rem 0;
+      }
+
+      .featured-projects h2 {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #333;
+      }
+
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .project-card {
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .project-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+      }
+
+      .project-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .project-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+
+      .project-card h3 {
+        color: #333;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+
+      .project-card p {
+        color: #666;
+        text-align: left;
+        line-height: 1.6;
+        font-size: 0.8em;
+        margin-bottom: 1.5rem;
+      }
+
+      .project-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .project-tag {
+        background: #e9ecef;
+        color: #495057;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .about-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        margin: 3rem 0;
+        align-items: center;
+      }
+
+      .about-content h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #333;
+      }
+
+      .about-content p {
+        line-height: 1.7;
+        color: #666;
+        margin-bottom: 1rem;
+      }
+
+      .interests {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .interest-card {
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-radius: 0.5rem;
+
+        transition: transform 0.3s ease;
+      }
+
+      .interest-card p {
+        font-size: 0.8em;
+        text-align: left;
+      }
+
+      .interest-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .interest-card h3 {
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-size: 1.5rem;
+      }
+
+      .latest-posts {
+        margin: 4rem 0;
+        text-decoration: none;
+      }
+
+      .latest-posts a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .latest-posts h2 {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #333;
+      }
+
+      .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .post-card {
+        background: white;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .post-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .post-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .post-content {
+        padding: 1.5rem;
+        font-size: 0.9em;
+        text-align: left;
+      }
+
+      .post-content h3 {
+        margin-bottom: 0.5rem;
+        color: #333;
+      }
+
+      .post-content p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        text-align: left;
+      }
+
+      .post-date {
+        color: #999;
+        font-size: 0.9rem;
+      }
+
+      .cta-section {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: #f8f9fa;
+        border-radius: 1rem;
+        margin: 3rem 0;
+      }
+
+      .cta-section h2 {
+        margin-bottom: 1rem;
+        color: #333;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+
+      .btn {
+        padding: 0.75rem 2rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-secondary {
+        background: white;
+        color: #333;
+        border: 2px solid #ddd;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        main {
+          padding: 0 1rem;
+        }
+
+        .hero h1 {
+          font-size: 2.5rem;
+        }
+
+        .about-section {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .skills {
+          gap: 0.5rem;
+        }
+
+        .cta-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        main {
+          padding: 0 0.5rem;
+        }
+
+        .hero {
+          padding: 2rem 1rem;
+        }
+
+        .posts-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .projects-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stats-section {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <!-- Hero Section -->
+      <section class="hero">
+        <h1>MDGdev</h1>
+        <p>
+          DevOps developer with a passion for culture, art, development, and
+          technology. Embracing a modern approach to innovation - where
+          technical excellence meets creative thinking.
+        </p>
+        <div class="skills">
+          <span class="skill-tag">🚀 DevOps</span>
+          <span class="skill-tag">☁️ Cloud Architecture</span>
+          <span class="skill-tag">🎨 Creative Thinking</span>
+          <span class="skill-tag">🔧 Automation</span>
+          <span class="skill-tag">📚 Continuous Learning</span>
+        </div>
+      </section>
+
+      <!-- Latest Posts Section -->
+      {
+        posts.length > 0 && (
+          <section class="latest-posts">
+            <h2>Latest Thoughts</h2>
+            <div class="posts-grid">
+              {posts.map((post) => (
+                <article class="post-card">
+                  <a href={`/blog/${post.id}/`}>
+                    {post.data.heroImage && (
+                      <Image
+                        width={300}
+                        height={200}
+                        src={post.data.heroImage}
+                        alt={post.data.title}
+                      />
+                    )}
+                    <div class="post-content">
+                      <h3>{post.data.title}</h3>
+                      <p class="post-date">
+                        <FormattedDate date={post.data.pubDate} />
+                      </p>
+                      {post.data.description && <p>{post.data.description}</p>}
+                    </div>
+                  </a>
+                </article>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <!-- Stats Section -->
+      <section class="stats-section">
+        <div class="stat-item">
+          <span class="stat-number">5+</span>
+          <span class="stat-label">Years in DevOps</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">50+</span>
+          <span class="stat-label">Projects Deployed</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">∞</span>
+          <span class="stat-label">Lines of Code</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Passion Driven</span>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section class="about-section">
+        <div class="about-content">
+          <h2>The Modern Renaissance</h2>
+          <p>
+            I believe in the power of combining technical mastery with artistic
+            vision. In the world of Computer Science, this means creating
+            elegant solutions that are both functional and beautiful.
+          </p>
+          <p>
+            My approach blends cutting-edge technology with human-centered
+            design, always seeking to bridge the gap between what's possible and
+            what's meaningful.
+          </p>
+        </div>
+        <div class="interests">
+          <div class="interest-card">
+            <h3>🎭 Culture & Art</h3>
+            <p>Exploring human creativity and expression</p>
+          </div>
+          <div class="interest-card">
+            <h3>💻 Development</h3>
+            <p>Crafting elegant code and solutions</p>
+          </div>
+          <div class="interest-card">
+            <h3>🔬 Technology</h3>
+            <p>Pushing the boundaries of what's possible</p>
+          </div>
+          <div class="interest-card">
+            <h3>🚀 Innovation</h3>
+            <p>Creating the future, one project at a time</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Projects Section -->
+      <section class="featured-projects">
+        <h2>Featured Projects</h2>
+        <div class="projects-grid">
+          <article class="project-card">
+            <span class="project-icon">🚀</span>
+            <h3>Cloud Infrastructure Automation</h3>
+            <p>
+              Designed and implemented scalable cloud infrastructure using
+              Infrastructure as Code (IaC) principles, reducing deployment time
+              by 80% and improving system reliability.
+            </p>
+            <div class="project-tags">
+              <span class="project-tag">AWS</span>
+              <span class="project-tag">Terraform</span>
+              <span class="project-tag">Docker</span>
+              <span class="project-tag">Kubernetes</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <span class="project-icon">🎨</span>
+            <h3>DevOps Cultural Transformation</h3>
+            <p>
+              Led organizational change initiatives that bridged the gap between
+              development and operations, fostering a culture of collaboration
+              and continuous improvement.
+            </p>
+            <div class="project-tags">
+              <span class="project-tag">Leadership</span>
+              <span class="project-tag">CI/CD</span>
+              <span class="project-tag">Agile</span>
+              <span class="project-tag">Mentoring</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <span class="project-icon">🔧</span>
+            <h3>Monitoring & Observability Platform</h3>
+            <p>
+              Built comprehensive monitoring solutions that provide deep
+              insights into system performance, enabling proactive issue
+              resolution and optimal user experience.
+            </p>
+            <div class="project-tags">
+              <span class="project-tag">Prometheus</span>
+              <span class="project-tag">Grafana</span>
+              <span class="project-tag">ELK Stack</span>
+              <span class="project-tag">Alerting</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Call to Action -->
+      <section class="cta-section">
+        <h2>Let's Create Something Amazing</h2>
+        <p>
+          Whether you're interested in DevOps, technology, or just want to
+          explore the intersection of art and code, I'd love to connect.
+        </p>
+        <div class="cta-buttons">
+          <a href="/blog" class="btn btn-primary">Read My Blog</a>
+          <a href="/about" class="btn btn-secondary">Learn More About Me</a>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </body>
 </html>
