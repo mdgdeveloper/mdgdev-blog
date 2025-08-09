@@ -9,12 +9,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 
 // Get latest 3 blog posts
 const posts = (await getCollection("blog"))
-  .sort(
-    (
-      a,
-      b,
-    ) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-  )
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
 ---
 
@@ -22,18 +17,7 @@ const posts = (await getCollection("blog"))
 <html lang="en">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
     <style>
-      * {
-        font-family: "Manrope", sans-serif;
-        box-sizing: border-box;
-      }
-
       main {
         max-width: 1200px;
         margin: 0 auto;
