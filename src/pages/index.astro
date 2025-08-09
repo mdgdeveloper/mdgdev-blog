@@ -9,7 +9,28 @@ import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 
 // Get latest 3 blog posts
 const posts = (await getCollection("blog"))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .sort(
+    (
+      a: {
+        data: {
+          pubDate: Date;
+          title: string;
+          heroImage?: string;
+          description?: string;
+        };
+        id: string;
+      },
+      b: {
+        data: {
+          pubDate: Date;
+          title: string;
+          heroImage?: string;
+          description?: string;
+        };
+        id: string;
+      },
+    ) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  )
   .slice(0, 3);
 ---
 
@@ -26,6 +47,7 @@ const posts = (await getCollection("blog"))
     <style>
       * {
         font-family: "Manrope", sans-serif;
+        box-sizing: border-box;
       }
 
       main {
@@ -49,6 +71,7 @@ const posts = (await getCollection("blog"))
         margin-bottom: 3rem;
         border-radius: 1rem;
         position: relative;
+        overflow: hidden;
       }
 
       .hero h1 {
@@ -93,7 +116,7 @@ const posts = (await getCollection("blog"))
 
       .stats-section {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
         gap: 2rem;
         margin: 4rem 0;
         padding: 3rem 0;
@@ -160,7 +183,7 @@ const posts = (await getCollection("blog"))
 
       .projects-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(350px, 100%), 1fr));
         gap: 2rem;
         margin-top: 2rem;
       }
@@ -249,7 +272,7 @@ const posts = (await getCollection("blog"))
 
       .interests {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
         gap: 1.5rem;
         margin: 2rem 0;
       }
@@ -296,7 +319,7 @@ const posts = (await getCollection("blog"))
 
       .posts-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
         gap: 2rem;
       }
 
@@ -390,7 +413,12 @@ const posts = (await getCollection("blog"))
 
       @media (max-width: 768px) {
         main {
-          padding: 0 1rem;
+          padding: 2rem 1rem;
+        }
+
+        .hero {
+          padding: 3rem 1rem;
+          margin-bottom: 2rem;
         }
 
         .hero h1 {
@@ -410,15 +438,35 @@ const posts = (await getCollection("blog"))
           flex-direction: column;
           align-items: center;
         }
+
+        .stats-section,
+        .featured-projects,
+        .latest-posts {
+          margin: 2rem 0;
+        }
+
+        .cta-section {
+          margin: 2rem 0;
+          padding: 2rem 1rem;
+        }
       }
 
       @media (max-width: 480px) {
         main {
-          padding: 0 0.5rem;
+          padding: 1rem 0.5rem;
         }
 
         .hero {
           padding: 2rem 1rem;
+          border-radius: 0.5rem;
+        }
+
+        .hero h1 {
+          font-size: 2rem;
+        }
+
+        .hero p {
+          font-size: 1rem;
         }
 
         .posts-grid {
@@ -431,6 +479,31 @@ const posts = (await getCollection("blog"))
 
         .stats-section {
           grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+          padding: 2rem 1rem;
+        }
+
+        .stat-number {
+          font-size: 2rem;
+        }
+
+        .about-section {
+          margin: 2rem 0;
+        }
+
+        .interests {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
+        .project-card {
+          padding: 1.5rem;
+        }
+
+        .featured-projects h2,
+        .latest-posts h2,
+        .about-content h2 {
+          font-size: 2rem;
         }
       }
     </style>
@@ -461,27 +534,39 @@ const posts = (await getCollection("blog"))
           <section class="latest-posts">
             <h2>Latest Thoughts</h2>
             <div class="posts-grid">
-              {posts.map((post) => (
-                <article class="post-card">
-                  <a href={`/blog/${post.id}/`}>
-                    {post.data.heroImage && (
-                      <Image
-                        width={300}
-                        height={200}
-                        src={post.data.heroImage}
-                        alt={post.data.title}
-                      />
-                    )}
-                    <div class="post-content">
-                      <h3>{post.data.title}</h3>
-                      <p class="post-date">
-                        <FormattedDate date={post.data.pubDate} />
-                      </p>
-                      {post.data.description && <p>{post.data.description}</p>}
-                    </div>
-                  </a>
-                </article>
-              ))}
+              {posts.map(
+                (post: {
+                  data: {
+                    pubDate: Date;
+                    title: string;
+                    heroImage?: string;
+                    description?: string;
+                  };
+                  id: string;
+                }) => (
+                  <article class="post-card">
+                    <a href={`/blog/${post.id}/`}>
+                      {post.data.heroImage && (
+                        <Image
+                          width={300}
+                          height={200}
+                          src={post.data.heroImage}
+                          alt={post.data.title}
+                        />
+                      )}
+                      <div class="post-content">
+                        <h3>{post.data.title}</h3>
+                        <p class="post-date">
+                          <FormattedDate date={post.data.pubDate} />
+                        </p>
+                        {post.data.description && (
+                          <p>{post.data.description}</p>
+                        )}
+                      </div>
+                    </a>
+                  </article>
+                ),
+              )}
             </div>
           </section>
         )
