@@ -1,12 +1,13 @@
 # TODO - MDGdev Blog
 
-## 🚀 High Priority
+# TODO - MDGdev Blog
+
+## 🎯 Version 0.3.0 - Mobile & Performance Improvements
 
 ### Content & SEO
 - [ ] Complete blog post: "Why I Still Study Math as a Senior Engineer"
 - [ ] Add meta descriptions for all existing blog posts
 - [ ] Implement structured data (JSON-LD) for blog posts
-- [ ] Create sitemap.xml generation
 - [ ] Add Open Graph images for social sharing
 
 ### Design & UX
@@ -14,63 +15,75 @@
 - [x] Fix blog post title overflow on smartphones
 - [x] Improve responsive design for all breakpoints
 - [ ] Add dark mode toggle
-- [ ] Implement smooth scrolling and animations
-- [ ] Add loading states for images
 - [ ] Create 404 error page
+- [ ] Add loading states for images
 
 ### Performance
 - [ ] Optimize images (WebP format, lazy loading)
-- [ ] Implement critical CSS inlining
-- [ ] Add service worker for caching
 - [ ] Optimize font loading performance
-- [ ] Implement image compression pipeline
+- [ ] Fix font loading causing layout shift
+- [ ] Images optimization for different screen sizes
 
-## 🔧 Medium Priority
+## 🎯 Version 0.4.0 - Core Features & Content Management
 
 ### Features
 - [ ] Add search functionality for blog posts
 - [ ] Implement blog post categories/tags
 - [ ] Add reading time estimation
 - [ ] Create RSS feed optimization
-- [ ] Add comment system (maybe Giscus or similar)
-- [ ] Implement blog post series/collections
 
 ### Content Management
 - [ ] Create content writing guidelines
-- [ ] Set up automated image optimization
 - [ ] Add draft post functionality
 - [ ] Create post templates for different types of content
-- [ ] Implement content scheduling
+- [ ] Set up automated image optimization
 
-### Analytics & Monitoring
+### SEO & Analytics
+- [ ] Create sitemap.xml generation
 - [ ] Add Google Analytics or privacy-friendly alternative
 - [ ] Implement Core Web Vitals monitoring
-- [ ] Add error tracking (Sentry)
-- [ ] Set up uptime monitoring
 
-## 📱 Low Priority
+## 🎯 Version 0.5.0 - Enhanced User Experience
+
+### Advanced Features
+- [ ] Add comment system (maybe Giscus or similar)
+- [ ] Implement blog post series/collections
+- [ ] Add social media sharing buttons
+- [ ] Implement smooth scrolling and animations
+
+### Content Enhancement
+- [ ] Add code syntax highlighting themes
+- [ ] Implement math formula rendering (KaTeX)
+- [ ] Add interactive diagrams and charts
 
 ### Social & Sharing
-- [ ] Add social media sharing buttons
 - [ ] Create newsletter signup
 - [ ] Implement social media meta tags optimization
 - [ ] Add author bio section
 
-### Code Quality
+## 🎯 Version 1.0.0 - Production Ready
+
+### Code Quality & DevOps
 - [ ] Set up ESLint and Prettier
 - [ ] Add TypeScript strict mode
 - [ ] Implement automated testing
 - [ ] Add pre-commit hooks
-- [ ] Create component documentation
-
-### Deployment & DevOps
 - [ ] Set up automated deployment pipeline
+
+### Performance & Monitoring
+- [ ] Implement critical CSS inlining
+- [ ] Add service worker for caching
+- [ ] Add error tracking (Sentry)
+- [ ] Set up uptime monitoring
+- [ ] Implement image compression pipeline
+
+### Deployment & Infrastructure
 - [ ] Add environment variables management
 - [ ] Implement staging environment
 - [ ] Add backup strategy
 - [ ] Set up monitoring and alerts
 
-## 🎨 Nice to Have
+## � Version 1.1.0+ - Future Enhancements
 
 ### Advanced Features
 - [ ] Add interactive code playground
@@ -79,11 +92,10 @@
 - [ ] Create mobile app companion
 - [ ] Add multilingual support
 
-### Content Enhancement
-- [ ] Add code syntax highlighting themes
-- [ ] Implement math formula rendering (KaTeX)
-- [ ] Add interactive diagrams and charts
-- [ ] Create video content embedding
+### Content Scheduling & Management
+- [ ] Implement content scheduling
+- [ ] Create component documentation
+- [ ] Add video content embedding
 - [ ] Add audio/podcast support
 
 ## 📝 Content Ideas
@@ -101,7 +113,7 @@
 - [ ] "Container Orchestration in Production"
 - [ ] "CI/CD Pipeline Optimization"
 
-## 🐛 Known Issues
+## 🐛 Known Issues (Target: v0.3.0)
 
 - [x] Horizontal scrolling on mobile devices
 - [x] Blog post titles overflowing on small screens
@@ -111,6 +123,7 @@
 
 ## 📋 Completed Tasks
 
+### Version 0.2.0 (Completed)
 - [x] Initial blog setup with Astro
 - [x] Basic responsive design implementation
 - [x] Hero section with skills showcase
@@ -118,8 +131,27 @@
 - [x] Mobile responsiveness fixes
 - [x] Header and footer components
 - [x] Basic SEO meta tags setup
+- [x] Fix horizontal scrolling on mobile devices
+- [x] Fix blog post title overflow on smartphones
+- [x] Improve responsive design for all breakpoints
+- [x] Syntax error fix in index.astro posts mapping
+
+### Version 0.1.0 (Completed)
+- [x] Project initialization and basic structure
+- [x] Astro framework setup
+- [x] TypeScript configuration
+- [x] Content collections setup
+- [x] Basic styling and layout
 
 ---
 
+**Current Version:** 0.2.0  
+**Next Target:** 0.3.0 - Mobile & Performance Improvements  
 **Last Updated:** August 9, 2025
-**Priority Legend:** 🚀 High | 🔧 Medium | 📱 Low | 🎨 Nice to Have
+
+**Version Legend:**  
+🎯 **0.3.0** - Mobile & Performance Focus  
+🎯 **0.4.0** - Core Features & Content  
+� **0.5.0** - Enhanced UX  
+🎯 **1.0.0** - Production Ready  
+🎯 **1.1.0+** - Future Enhancements
