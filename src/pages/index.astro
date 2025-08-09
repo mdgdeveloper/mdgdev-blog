@@ -11,24 +11,8 @@ import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 const posts = (await getCollection("blog"))
   .sort(
     (
-      a: {
-        data: {
-          pubDate: Date;
-          title: string;
-          heroImage?: string;
-          description?: string;
-        };
-        id: string;
-      },
-      b: {
-        data: {
-          pubDate: Date;
-          title: string;
-          heroImage?: string;
-          description?: string;
-        };
-        id: string;
-      },
+      a,
+      b,
     ) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   )
   .slice(0, 3);
@@ -534,39 +518,27 @@ const posts = (await getCollection("blog"))
           <section class="latest-posts">
             <h2>Latest Thoughts</h2>
             <div class="posts-grid">
-              {posts.map(
-                (post: {
-                  data: {
-                    pubDate: Date;
-                    title: string;
-                    heroImage?: string;
-                    description?: string;
-                  };
-                  id: string;
-                }) => (
-                  <article class="post-card">
-                    <a href={`/blog/${post.id}/`}>
-                      {post.data.heroImage && (
-                        <Image
-                          width={300}
-                          height={200}
-                          src={post.data.heroImage}
-                          alt={post.data.title}
-                        />
-                      )}
-                      <div class="post-content">
-                        <h3>{post.data.title}</h3>
-                        <p class="post-date">
-                          <FormattedDate date={post.data.pubDate} />
-                        </p>
-                        {post.data.description && (
-                          <p>{post.data.description}</p>
-                        )}
-                      </div>
-                    </a>
-                  </article>
-                ),
-              )}
+              {posts.map((post) => (
+                <article class="post-card">
+                  <a href={`/blog/${post.id}/`}>
+                    {post.data.heroImage && (
+                      <Image
+                        width={300}
+                        height={200}
+                        src={post.data.heroImage}
+                        alt={post.data.title}
+                      />
+                    )}
+                    <div class="post-content">
+                      <h3>{post.data.title}</h3>
+                      <p class="post-date">
+                        <FormattedDate date={post.data.pubDate} />
+                      </p>
+                      {post.data.description && <p>{post.data.description}</p>}
+                    </div>
+                  </a>
+                </article>
+              ))}
             </div>
           </section>
         )
