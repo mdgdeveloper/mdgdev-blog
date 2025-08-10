@@ -6,11 +6,11 @@ import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import { getSortedPublishedPosts } from "../utils/blog";
 
-// Get latest 3 blog posts
-const posts = (await getCollection("blog"))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
+// Get latest 3 published blog posts
+const allPosts = await getCollection("blog");
+const posts = getSortedPublishedPosts(allPosts).slice(0, 3);
 ---
 
 <!doctype html>

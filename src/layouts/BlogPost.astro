@@ -68,6 +68,8 @@ const {
       }
       .last-updated-on {
         font-style: italic;
+        font-size: 1rem;
+        color: #969696;
       }
 
       .tags {
@@ -147,13 +149,6 @@ const {
           <div class="title">
             <div class="date">
               <FormattedDate date={pubDate} />
-              {
-                updatedDate && (
-                  <div class="last-updated-on">
-                    Last updated on <FormattedDate date={updatedDate} />
-                  </div>
-                )
-              }
             </div>
             <h1>{title}</h1>
             {
@@ -169,6 +164,13 @@ const {
           </div>
 
           <slot />
+          {
+            updatedDate && (
+              <div class="last-updated-on">
+                Last updated on <FormattedDate date={updatedDate} />
+              </div>
+            )
+          }
         </div>
       </article>
     </main>

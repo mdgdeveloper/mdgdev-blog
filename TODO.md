@@ -33,6 +33,7 @@
 - [ ] Create RSS feed optimization
 
 ### Content Management
+- [x] ✨ Implement post publishing system (future-dated posts are hidden)
 - [ ] Create content writing guidelines
 - [ ] Add draft post functionality
 - [ ] Create post templates for different types of content
@@ -135,6 +136,7 @@
 - [x] Fix blog post title overflow on smartphones
 - [x] Improve responsive design for all breakpoints
 - [x] Syntax error fix in index.astro posts mapping
+- [x] ✨ Implement post publishing system (future-dated posts are hidden)
 
 ### Version 0.1.0 (Completed)
 - [x] Project initialization and basic structure

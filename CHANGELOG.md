@@ -8,14 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- ✨ Post publishing system with date-based filtering
+- Blog utility functions for handling published posts
+- Test posts for validating publishing functionality
 - TODO.md with comprehensive project roadmap
 - CHANGELOG.md for tracking project changes
 
 ### Changed
+- Updated blog post filtering to respect publication dates
 - Improved mobile responsiveness across all components
 - Enhanced grid layouts with better overflow handling
 
 ### Fixed
+- Future-dated posts no longer appear in blog listings
 - Horizontal scrolling issues on mobile devices
 - Blog post title overflow on smartphones
 - Syntax error in index.astro posts mapping function
