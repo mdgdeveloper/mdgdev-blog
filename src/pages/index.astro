@@ -7,6 +7,7 @@ import Header from "../components/Header.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 import { getSortedPublishedPosts } from "../utils/blog";
+import OgImage from "../assets/blog-placeholder-about.jpg";
 
 // Get latest 3 published blog posts
 const allPosts = await getCollection("blog");
@@ -16,7 +17,11 @@ const posts = getSortedPublishedPosts(allPosts).slice(0, 3);
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead
+      title={SITE_TITLE}
+      description={SITE_DESCRIPTION}
+      image={OgImage}
+    />
     <style>
       main {
         max-width: 1200px;
