@@ -2,7 +2,7 @@
 title: 'My Favorite VS Code Extensions'
 description: 'A list of my favorite Visual Studio Code extensions to enhance productivity and improve the development experience.'
 pubDate: '2025-08-11'
-updatedDate: '2025-08-18'
+updatedDate: '2025-08-11'
 heroImage: '../../assets/my-favorite-extensions/vscode-extensions.jpg'
 tags: ['VS Code', 'Extensions', 'Development', 'Code']
 ---
