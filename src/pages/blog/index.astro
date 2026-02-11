@@ -2,9 +2,7 @@
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import BaseHead from "../../components/BaseHead.astro";
-import Footer from "../../components/Footer.astro";
 import FormattedDate from "../../components/FormattedDate.astro";
-import Header from "../../components/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 import { getSortedPublishedPosts } from "../../utils/blog";
 
@@ -15,112 +13,429 @@ const posts = getSortedPublishedPosts(allPosts);
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead
+			title={`${SITE_TITLE} - Blog`}
+			description={SITE_DESCRIPTION}
+		/>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
 		<style>
-			main {
-				max-width: 1200px;
-				margin: 0 auto;
-				padding: 0 1rem;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
+			* {
 				margin: 0;
 				padding: 0;
+				box-sizing: border-box;
 			}
-			ul li {
-				width: calc(50% - 1rem);
+
+			body {
+				background: #0d1117;
+				color: #b8b8b8;
+				font-family:
+					"Fira Code", "Monaco", "Menlo", "Consolas", monospace;
+				font-size: 16px;
+				line-height: 1.7;
+				font-variant-ligatures: normal;
+				font-feature-settings:
+					"liga" 1,
+					"calt" 1;
 			}
-			ul li * {
+
+			.github-header {
+				max-width: 900px;
+				margin: 20px auto;
+				background: #1e1e1e;
+				border: 1px solid #333333;
+				border-radius: 6px;
+				padding: 16px 20px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			.repo-info {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+			}
+
+			.repo-icon {
+				width: 20px;
+				height: 20px;
+				color: #787878;
+			}
+
+			.repo-name {
+				color: #a89984;
+				font-weight: 600;
 				text-decoration: none;
-				transition: 0.2s ease;
 			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-				margin-top: 50px;
+
+			.repo-name:hover {
+				text-decoration: underline;
 			}
-			ul li:first-child img {
-				width: 100%;
-				/* Make the height lower */
-				max-height: 500px;
-				object-fit: cover;
+
+			.repo-meta {
+				display: flex;
+				gap: 16px;
+				align-items: center;
+				font-size: 14px;
+				color: #787878;
 			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
+
+			.terminal {
+				max-width: 900px;
+				margin: 0 auto 20px auto;
+				background: #1e1e1e;
+				border: 1px solid #333333;
+				border-radius: 6px;
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+				overflow: hidden;
 			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
+
+			.github-tabs {
+				background: #1e1e1e;
+				border-bottom: 1px solid #333333;
+				padding: 0 20px;
+				display: flex;
+				gap: 8px;
 			}
-			ul li a {
+
+			.github-tab {
+				padding: 12px 16px;
+				color: #787878;
+				text-decoration: none;
+				border-bottom: 2px solid transparent;
+				transition: all 0.2s;
+				font-size: 14px;
+			}
+
+			.github-tab.active {
+				color: #a89984;
+				border-bottom-color: #a89984;
+			}
+
+			.github-tab:hover {
+				color: #b8b8b8;
+			}
+
+			.terminal-header {
+				background: #1e1e1e;
+				padding: 16px 20px;
+				border-bottom: 1px solid #333333;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			.file-path {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				color: #787878;
+				font-size: 14px;
+			}
+
+			.file-icon {
+				color: #a89984;
+			}
+
+			.action-button {
+				background: #1e1e1e;
+				border: 1px solid #333333;
+				color: #b8b8b8;
+				padding: 6px 12px;
+				border-radius: 6px;
+				font-size: 12px;
+				cursor: pointer;
+				text-decoration: none;
+				font-family: "Fira Code", monospace;
+			}
+
+			.action-button:hover {
+				background: #252525;
+			}
+
+			.terminal-body {
+				padding: 24px;
+			}
+
+			.breadcrumb {
+				color: #787878;
+				font-size: 12px;
+				margin-bottom: 8px;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+
+			.breadcrumb a {
+				color: #a89984;
+				text-decoration: none;
+			}
+
+			.breadcrumb a:hover {
+				text-decoration: underline;
+			}
+
+			.separator {
+				color: #404040;
+			}
+
+			h1 {
+				color: #d0d0d0;
+				font-size: 32px;
+				font-weight: 600;
+				margin: 24px 0 12px 0;
+				display: flex;
+				align-items: center;
+				gap: 12px;
+			}
+
+			h1::before {
+				content: ">";
+				color: #a89984;
+			}
+
+			.meta {
+				color: #787878;
+				font-size: 14px;
+				margin-bottom: 32px;
+				display: flex;
+				gap: 20px;
+				flex-wrap: wrap;
+				align-items: center;
+			}
+
+			.meta-item {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+			}
+
+			.meta-item::before {
+				content: "•";
+				color: #404040;
+			}
+
+			.content h2 {
+				color: #d8d8d8;
+				font-size: 24px;
+				font-weight: 600;
+				margin: 32px 0 16px 0;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+
+			.content h2::before {
+				content: "##";
+				color: #a89984;
+				font-size: 16px;
+			}
+
+			.posts-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+				gap: 16px;
+				margin-top: 16px;
+			}
+
+			.post-card {
+				background: #1a1a1a;
+				border: 1px solid #333333;
+				border-radius: 6px;
+				overflow: hidden;
+				transition: all 0.2s;
+				text-decoration: none;
 				display: block;
 			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
+
+			.post-card:hover {
+				background: #252525;
+				border-color: #404040;
 			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
+
+			.post-image {
+				width: 100%;
+				height: 180px;
+				object-fit: cover;
+				border-bottom: 1px solid #333333;
 			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
+
+			.post-content {
+				padding: 16px;
 			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
+
+			.post-title {
+				color: #d0d0d0;
+				font-size: 16px;
+				font-weight: 600;
+				margin-bottom: 8px;
+				line-height: 1.4;
 			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
+
+			.post-meta {
+				color: #787878;
+				font-size: 12px;
+				margin-bottom: 8px;
+			}
+
+			.post-description {
+				color: #b8b8b8;
+				font-size: 14px;
+				line-height: 1.5;
+			}
+
+			.no-posts {
+				color: #787878;
+				text-align: center;
+				padding: 40px 20px;
+				font-style: italic;
+			}
+
+			.footer-section {
+				margin-top: 40px;
+				padding-top: 20px;
+				border-top: 1px solid #333333;
+				color: #787878;
+				font-size: 12px;
+				text-align: center;
+			}
+
+			@media (max-width: 768px) {
+				.github-header {
+					margin: 10px;
+					padding: 12px 16px;
 				}
-				ul li {
-					width: 100%;
-					text-align: center;
+
+				.terminal {
+					margin: 10px;
 				}
-				ul li:first-child {
-					margin-bottom: 0;
-					margin-top: 10px;
+
+				.terminal-body {
+					padding: 16px;
 				}
-				ul li:first-child .title {
-					font-size: 1.563em;
+
+				h1 {
+					font-size: 24px;
+				}
+
+				.posts-grid {
+					grid-template-columns: 1fr;
 				}
 			}
 		</style>
 	</head>
 	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image
-											width={720}
-											height={360}
-											src={post.data.heroImage}
-											alt=""
-										/>
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
+		<div class="github-header">
+			<div class="repo-info">
+				<svg class="repo-icon" viewBox="0 0 16 16" fill="currentColor">
+					<path
+						d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"
+					></path>
+				</svg>
+				<span class="repo-name">MDGdev Blog</span>
+			</div>
+			<div class="repo-meta">
+				<span>mdg@devops.local</span>
+			</div>
+		</div>
+
+		<div class="terminal">
+			<div class="github-tabs">
+				<a href="/" class="github-tab">Portfolio</a>
+				<span class="github-tab active">Blog</span>
+				<a href="/about" class="github-tab">About</a>
+				<span class="github-tab">Archive</span>
+			</div>
+
+			<div class="terminal-header">
+				<div class="file-path">
+					<span class="file-icon">📝</span>
+					<span>blog-posts</span>
+				</div>
+				<div class="file-actions">
+					<a href="/" class="action-button">Portfolio</a>
+					<a href="/about" class="action-button">Contact</a>
+				</div>
+			</div>
+
+			<div class="terminal-body">
+				<article>
+					<div class="breadcrumb">
+						<span>~</span>
+						<span class="separator">/</span>
+						<span>home</span>
+						<span class="separator">/</span>
+						<span>mdg</span>
+						<span class="separator">/</span>
+						<span>blog</span>
+					</div>
+
+					<h1>Blog Posts</h1>
+
+					<div class="meta">
+						<span class="meta-item">{posts.length} articles</span>
+						<span class="meta-item"
+							>Technical insights & thoughts</span
+						>
+						<span class="meta-item">DevOps & Culture</span>
+					</div>
+
+					<div class="content">
+						<h2>Latest Articles</h2>
+						{
+							posts.length > 0 ? (
+								<div class="posts-grid">
+									{posts.map((post) => (
+										<a
+											href={`/blog/${post.id}/`}
+											class="post-card"
+										>
+											{post.data.heroImage && (
+												<Image
+													class="post-image"
+													width={400}
+													height={200}
+													src={post.data.heroImage}
+													alt={post.data.title}
+												/>
+											)}
+											<div class="post-content">
+												<div class="post-title">
+													{post.data.title}
+												</div>
+												<div class="post-meta">
+													<FormattedDate
+														date={post.data.pubDate}
+													/>
+												</div>
+												{post.data.description && (
+													<div class="post-description">
+														{post.data.description}
+													</div>
+												)}
+											</div>
+										</a>
+									))}
+								</div>
+							) : (
+								<div class="no-posts">No blog posts found.</div>
+							)
+						}
+					</div>
+
+					<div class="footer-section">
+						<p>
+							EOF - Last updated: Feb 11, 2026 - {posts.length} posts
+							indexed
+						</p>
+					</div>
+				</article>
+			</div>
+		</div>
 	</body>
 </html>

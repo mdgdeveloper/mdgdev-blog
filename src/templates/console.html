@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Pod Lifecycle Deep Dive | DevOps Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d1117;
+            color: #b8b8b8;
+            font-family: 'Fira Code', 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 16px;
+            line-height: 1.7;
+            padding: 20px;
+            font-variant-ligatures: normal;
+            font-feature-settings: "liga" 1, "calt" 1;
+        }
+
+        .github-header {
+            max-width: 900px;
+            margin: 0 auto 20px auto;
+            background: #1e1e1e;
+            border: 1px solid #333333;
+            border-radius: 6px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .repo-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .repo-icon {
+            width: 20px;
+            height: 20px;
+            color: #787878;
+        }
+
+        .repo-name {
+            color: #a89984;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .repo-name:hover {
+            text-decoration: underline;
+        }
+
+        .repo-meta {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            font-size: 14px;
+            color: #787878;
+        }
+
+        .terminal {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            border: 1px solid #333333;
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .github-tabs {
+            background: #1e1e1e;
+            border-bottom: 1px solid #333333;
+            padding: 0 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .github-tab {
+            padding: 12px 16px;
+            color: #787878;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .github-tab.active {
+            color: #a89984;
+            border-bottom-color: #a89984;
+        }
+
+        .github-tab:hover {
+            color: #b8b8b8;
+        }
+
+        .terminal-header {
+            background: #1e1e1e;
+            padding: 16px 20px;
+            border-bottom: 1px solid #333333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-path {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #787878;
+            font-size: 14px;
+        }
+
+        .file-icon {
+            color: #a89984;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-button {
+            background: #1e1e1e;
+            border: 1px solid #333333;
+            color: #b8b8b8;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            background: #252525;
+        }
+
+        .terminal-body {
+            padding: 24px;
+        }
+
+        .prompt {
+            color: #a89984;
+            user-select: none;
+        }
+
+        .command {
+            color: #c0c0c0;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .breadcrumb {
+            color: #787878;
+            font-size: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .breadcrumb a {
+            color: #a89984;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .separator {
+            color: #404040;
+        }
+
+        h1 {
+            color: #d0d0d0;
+            font-size: 32px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h1::before {
+            content: '>';
+            color: #a89984;
+        }
+
+        .meta {
+            color: #787878;
+            font-size: 14px;
+            margin-bottom: 32px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .meta-item::before {
+            content: '•';
+            color: #404040;
+        }
+
+        .author-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #a89984;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e1e1e;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .commit-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+            border-top: 1px solid #333333;
+            border-bottom: 1px solid #333333;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .commit-info .author-avatar {
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+        }
+
+        .commit-message {
+            color: #787878;
+        }
+
+        .commit-hash {
+            color: #a89984;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .content {
+            color: #c8c8c8;
+        }
+
+        .content p {
+            margin-bottom: 20px;
+        }
+
+        .content h2 {
+            color: #d8d8d8;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 32px 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .content h2::before {
+            content: '##';
+            color: #a89984;
+            font-size: 16px;
+        }
+
+        .content h3 {
+            color: #d0d0d0;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+        }
+
+        .content h3::before {
+            content: '###';
+            color: #a89984;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+
+        .content code {
+            background: #252525;
+            color: #a89984;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 15px;
+            font-variant-ligatures: normal;
+            font-feature-settings: "liga" 1, "calt" 1;
+        }
+
+        .content pre {
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: #1e1e1e;
+            border-bottom: 1px solid #333333;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #787878;
+        }
+
+        .code-language {
+            color: #a89984;
+        }
+
+        .copy-button {
+            background: transparent;
+            border: 1px solid #333333;
+            color: #787878;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .copy-button:hover {
+            background: #252525;
+            color: #b8b8b8;
+        }
+
+        .code-content {
+            padding: 16px;
+            overflow-x: auto;
+        }
+
+        .content pre code {
+            background: none;
+            padding: 0;
+            display: block;
+            font-variant-ligatures: normal;
+            font-feature-settings: "liga" 1, "calt" 1;
+        }
+
+        .content ul,
+        .content ol {
+            margin-left: 24px;
+            margin-bottom: 20px;
+        }
+
+        .content li {
+            margin-bottom: 8px;
+        }
+
+        .content li::marker {
+            color: #a89984;
+        }
+
+        .content a {
+            color: #a89984;
+            text-decoration: none;
+        }
+
+        .content a:hover {
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            border-left: 3px solid #a89984;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+
+        .info-box.warning {
+            border-left-color: #b89080;
+        }
+
+        .info-box-title {
+            color: #a89984;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning .info-box-title {
+            color: #b89080;
+        }
+
+        .info-box-title::before {
+            content: '💡';
+        }
+
+        .warning .info-box-title::before {
+            content: '⚠️';
+        }
+
+        .tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: transparent;
+            color: #a89984;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            border: 1px solid #a89984;
+        }
+
+        .tag::before {
+            content: '';
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #333333;
+            color: #787878;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .terminal-body {
+                padding: 16px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="github-header">
+        <div class="repo-info">
+            <svg class="repo-icon" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                    d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z">
+                </path>
+            </svg>
+            <a href="#" class="repo-name">DevOps Engineering Blog</a>
+        </div>
+        <div class="repo-meta">
+            <span>alex@devops.local</span>
+        </div>
+    </div>
+
+    <div class="terminal">
+        <div class="github-tabs">
+            <a href="#" class="github-tab active">Posts</a>
+            <a href="#" class="github-tab">Tutorials</a>
+            <a href="#" class="github-tab">About</a>
+            <a href="#" class="github-tab">Archive</a>
+        </div>
+
+        <div class="terminal-header">
+            <div class="file-path">
+                <span class="file-icon">📄</span>
+                <span>kubernetes-pod-lifecycle</span>
+            </div>
+            <div class="file-actions">
+                <button class="action-button">Share</button>
+                <button class="action-button">Subscribe</button>
+            </div>
+        </div>
+
+        <div class="terminal-body">
+            <article>
+                <div class="commit-info">
+                    <div class="author-avatar">A</div>
+                    <span class="commit-message">Published by alex@devops</span>
+                    <span class="commit-hash">2024-02-08</span>
+                </div>
+
+                <h1>Kubernetes Pod Lifecycle Deep Dive</h1>
+
+                <div class="meta">
+                    <span class="meta-item">12 min read</span>
+                    <span class="meta-item">Last updated: Feb 8, 2024</span>
+                </div>
+
+                <div class="content">
+                    <p>Understanding the Kubernetes Pod lifecycle is crucial for debugging issues, optimizing
+                        deployments, and building resilient applications. Let's break down what actually happens when
+                        you run <code>kubectl apply -f pod.yaml</code>.</p>
+
+                    <h2>The Five Pod Phases</h2>
+
+                    <p>Every Pod in Kubernetes goes through distinct phases during its lifecycle. These aren't just
+                        academic concepts—they're the actual states you'll see when troubleshooting production issues at
+                        3 AM.</p>
+
+                    <h3>1. Pending Phase</h3>
+
+                    <p>When a Pod enters the Pending phase, the Kubernetes API server has accepted it, but it hasn't
+                        been scheduled to a node yet. This is where the scheduler does its magic, considering:</p>
+
+                    <ul>
+                        <li>Resource requirements (CPU, memory)</li>
+                        <li>Node selectors and affinity rules</li>
+                        <li>Taints and tolerations</li>
+                        <li>Pod topology spread constraints</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <div class="info-box-title">Pro Tip</div>
+                        <p>If a Pod is stuck in Pending for more than a few seconds, use
+                            <code>kubectl describe pod &lt;pod-name&gt;</code> to check the Events section. You'll
+                            usually find scheduling failures there.</p>
+                    </div>
+
+                    <h3>2. Running Phase</h3>
+
+                    <p>Once scheduled, the kubelet on the target node takes over. It pulls the container images, creates
+                        the containers, and starts them. Here's a simplified view of what happens:</p>
+
+                    <pre><div class="code-header">
+                        <span class="code-language">bash</span>
+                        <button class="copy-button">Copy</button>
+                    </div><div class="code-content"><code># Kubelet workflow
+1. Pull image(s) from registry
+2. Create container(s) using container runtime (containerd, CRI-O)
+3. Execute init containers (if defined)
+4. Start main containers
+5. Execute liveness/readiness probes</code></div></pre>
+
+                    <div class="info-box warning">
+                        <div class="info-box-title">Watch Out</div>
+                        <p>A Pod in Running phase doesn't mean it's actually serving traffic. Check the READY column in
+                            <code>kubectl get pods</code>—that tells you if readiness probes are passing.</p>
+                    </div>
+
+                    <h2>Container Restart Policies</h2>
+
+                    <p>The restart policy determines what happens when a container exits. This is set at the Pod level
+                        and applies to all containers within it:</p>
+
+                    <ul>
+                        <li><code>Always</code> - Default for Deployments, restarts regardless of exit code</li>
+                        <li><code>OnFailure</code> - Only restarts if exit code is non-zero</li>
+                        <li><code>Never</code> - Never restarts, useful for Jobs</li>
+                    </ul>
+
+                    <h2>Init Containers: The Unsung Heroes</h2>
+
+                    <p>Init containers run before your main containers and are perfect for setup tasks like:</p>
+
+                    <pre><div class="code-header">
+                        <span class="code-language">yaml</span>
+                        <button class="copy-button">Copy</button>
+                    </div><div class="code-content"><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+spec:
+  initContainers:
+  - name: init-db-check
+    image: busybox:1.36
+    command: ['sh', '-c', 'until nc -z db 5432; do echo waiting for db; sleep 2; done']
+  containers:
+  - name: myapp
+    image: myapp:latest</code></div></pre>
+
+                    <p>They run sequentially, and each must complete successfully before the next starts. Main
+                        containers only start after all init containers succeed.</p>
+
+                    <h2>Graceful Shutdown and PreStop Hooks</h2>
+
+                    <p>When terminating a Pod, Kubernetes sends a SIGTERM signal, waits for
+                        <code>terminationGracePeriodSeconds</code> (default 30s), then sends SIGKILL. Use preStop hooks
+                        for cleanup:</p>
+
+                    <pre><div class="code-header">
+                        <span class="code-language">yaml</span>
+                        <button class="copy-button">Copy</button>
+                    </div><div class="code-content"><code>lifecycle:
+  preStop:
+    exec:
+      command: ["/bin/sh", "-c", "nginx -s quit; while killall -0 nginx; do sleep 1; done"]</code></div></pre>
+
+                    <h2>Real-World Debugging Scenarios</h2>
+
+                    <p>Here are the commands I use daily for Pod lifecycle debugging:</p>
+
+                    <pre><div class="code-header">
+                        <span class="code-language">bash</span>
+                        <button class="copy-button">Copy</button>
+                    </div><div class="code-content"><code># Check Pod status and events
+kubectl describe pod &lt;pod-name&gt;
+
+# Follow logs in real-time
+kubectl logs -f &lt;pod-name&gt;
+
+# Check previous container logs (after restart)
+kubectl logs --previous &lt;pod-name&gt;
+
+# Get detailed Pod spec as currently applied
+kubectl get pod &lt;pod-name&gt; -o yaml
+
+# Debug with ephemeral container (k8s 1.23+)
+kubectl debug &lt;pod-name&gt; -it --image=busybox</code></div></pre>
+
+                    <h2>Key Takeaways</h2>
+
+                    <p>Understanding Pod lifecycle isn't just about memorizing phases—it's about knowing where to look
+                        when things go wrong. The Pod lifecycle is deterministic, which means if you know the rules, you
+                        can predict the behavior.</p>
+
+                    <p>Remember: most production issues I've seen aren't because Kubernetes is broken, but because we
+                        didn't configure the lifecycle hooks, probes, and resource limits correctly. Master these
+                        fundamentals, and you'll save yourself countless debugging hours.</p>
+                </div>
+
+                <div class="tags">
+                    <span class="tag">kubernetes</span>
+                    <span class="tag">pods</span>
+                    <span class="tag">devops</span>
+                    <span class="tag">debugging</span>
+                    <span class="tag">container-orchestration</span>
+                </div>
+
+                <div class="footer">
+                    <p>EOF - Last modified: 2024-02-08 14:32:17 UTC</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</body>
+
+</html>
