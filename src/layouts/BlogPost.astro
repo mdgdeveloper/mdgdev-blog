@@ -2,9 +2,7 @@
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
-import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
-import Header from "../components/Header.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
@@ -21,159 +19,596 @@ const {
 <html lang="en">
   <head>
     <BaseHead title={title} description={description} image={heroImage} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      main {
-        width: 100%;
-        max-width: 100%;
+      * {
         margin: 0;
+        padding: 0;
         box-sizing: border-box;
       }
+
+      body {
+        background: #0d1117;
+        color: #b8b8b8;
+        font-family: "Fira Code", "Monaco", "Menlo", "Consolas", monospace;
+        font-size: 16px;
+        line-height: 1.7;
+        padding: 20px;
+        font-variant-ligatures: normal;
+        font-feature-settings:
+          "liga" 1,
+          "calt" 1;
+      }
+
+      .github-header {
+        max-width: 900px;
+        margin: 0 auto 20px auto;
+        background: #1e1e1e;
+        border: 1px solid #333333;
+        border-radius: 6px;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .repo-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .repo-icon {
+        width: 20px;
+        height: 20px;
+        color: #787878;
+      }
+
+      .repo-name {
+        color: #a89984;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .repo-name:hover {
+        text-decoration: underline;
+      }
+
+      .repo-meta {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        font-size: 14px;
+        color: #787878;
+      }
+
+      .terminal {
+        max-width: 900px;
+        margin: 0 auto;
+        background: #1e1e1e;
+        border: 1px solid #333333;
+        border-radius: 6px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+      }
+
+      .github-tabs {
+        background: #1e1e1e;
+        border-bottom: 1px solid #333333;
+        padding: 0 20px;
+        display: flex;
+        gap: 8px;
+      }
+
+      .github-tab {
+        padding: 12px 16px;
+        color: #787878;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        font-size: 14px;
+      }
+
+      .github-tab.active {
+        color: #a89984;
+        border-bottom-color: #a89984;
+      }
+
+      .github-tab:hover {
+        color: #b8b8b8;
+      }
+
+      .terminal-header {
+        background: #1e1e1e;
+        padding: 16px 20px;
+        border-bottom: 1px solid #333333;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .file-path {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #787878;
+        font-size: 14px;
+      }
+
+      .file-icon {
+        color: #a89984;
+      }
+
+      .file-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .action-button {
+        background: #1e1e1e;
+        border: 1px solid #333333;
+        color: #b8b8b8;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .action-button:hover {
+        background: #252525;
+      }
+
+      .terminal-body {
+        padding: 24px;
+      }
+
+      .prompt {
+        color: #a89984;
+        user-select: none;
+      }
+
+      .command {
+        color: #c0c0c0;
+        margin-bottom: 20px;
+        display: block;
+      }
+
+      .breadcrumb {
+        color: #787878;
+        font-size: 12px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .breadcrumb a {
+        color: #a89984;
+        text-decoration: none;
+      }
+
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+
+      .separator {
+        color: #404040;
+      }
+
+      h1 {
+        color: #d0d0d0;
+        font-size: 32px;
+        font-weight: 600;
+        margin: 24px 0 12px 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      h1::before {
+        content: ">";
+        color: #a89984;
+      }
+
+      .meta {
+        color: #787878;
+        font-size: 14px;
+        margin-bottom: 32px;
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .meta-item::before {
+        content: "•";
+        color: #404040;
+      }
+
+      .author-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #a89984;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1e1e1e;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .commit-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 0;
+        border-top: 1px solid #333333;
+        border-bottom: 1px solid #333333;
+        margin-bottom: 24px;
+        font-size: 14px;
+      }
+
+      .commit-info .author-avatar {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+      }
+
+      .commit-message {
+        color: #787878;
+      }
+
+      .commit-hash {
+        color: #a89984;
+        font-family: "Fira Code", monospace;
+        font-size: 12px;
+        margin-left: auto;
+      }
+
+      .content {
+        color: #c8c8c8;
+        letter-spacing: -0.04em;
+        line-height: 1.4;
+        font-size: 15px;
+        color: #a1a1a1;
+        font-weight: 300;
+      }
+
+      .content :global(p) {
+        margin-bottom: 20px;
+      }
+
+      .content :global(h2) {
+        color: #d8d8d8;
+        font-size: 24px;
+        font-weight: 600;
+        margin: 32px 0 16px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .content :global(h2::before) {
+        content: "##";
+        color: #a89984;
+        font-size: 16px;
+      }
+
+      .content :global(h3) {
+        color: #d0d0d0;
+        font-size: 18px;
+        font-weight: 600;
+        margin: 24px 0 12px 0;
+      }
+
+      .content :global(h3::before) {
+        content: "###";
+        color: #a89984;
+        font-size: 14px;
+        margin-right: 8px;
+      }
+
+      .content :global(code) {
+        background: #252525;
+        color: #a89984;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 15px;
+        font-variant-ligatures: normal;
+        font-feature-settings:
+          "liga" 1,
+          "calt" 1;
+      }
+
+      .content :global(pre) {
+        background: #1a1a1a;
+        border: 1px solid #333333;
+        border-radius: 6px;
+        margin: 20px 0;
+        overflow: hidden;
+      }
+
+      .code-header {
+        background: #1e1e1e;
+        border-bottom: 1px solid #333333;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #787878;
+      }
+
+      .code-language {
+        color: #a89984;
+      }
+
+      .copy-button {
+        background: transparent;
+        border: 1px solid #333333;
+        color: #787878;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        cursor: pointer;
+        font-family: "Fira Code", monospace;
+      }
+
+      .copy-button:hover {
+        background: #252525;
+        color: #b8b8b8;
+      }
+
+      .code-content {
+        padding: 16px;
+        overflow-x: auto;
+      }
+
+      .content :global(pre code) {
+        background: none;
+        padding: 0;
+        display: block;
+        font-variant-ligatures: normal;
+        font-feature-settings:
+          "liga" 1,
+          "calt" 1;
+      }
+
+      .content :global(ul),
+      .content :global(ol) {
+        margin-left: 24px;
+        margin-bottom: 20px;
+      }
+
+      .content :global(li) {
+        margin-bottom: 8px;
+      }
+
+      .content :global(li::marker) {
+        color: #a89984;
+      }
+
+      .content :global(a) {
+        color: #a89984;
+        text-decoration: none;
+      }
+
+      .content :global(a:hover) {
+        text-decoration: underline;
+      }
+
+      .info-box {
+        background: #1a1a1a;
+        border: 1px solid #333333;
+        border-left: 3px solid #a89984;
+        padding: 16px;
+        margin: 20px 0;
+        border-radius: 6px;
+      }
+
+      .info-box.warning {
+        border-left-color: #b89080;
+      }
+
+      .info-box-title {
+        color: #a89984;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .warning .info-box-title {
+        color: #b89080;
+      }
+
+      .info-box-title::before {
+        content: "💡";
+      }
+
+      .warning .info-box-title::before {
+        content: "⚠️";
+      }
+
       .hero-image {
         width: 100%;
-      }
-      .hero-image img {
-        display: block;
-        margin: 0 auto;
-        border-radius: 12px;
-        box-shadow: var(--box-shadow);
-      }
-      .prose {
-        width: 100%;
-        max-width: 820px;
-        margin: auto;
-        padding: 1em;
-        color: rgb(var(--gray-dark));
-        box-sizing: border-box;
-      }
-      .title {
-        margin-bottom: 1em;
-        padding: 1em 0;
-        text-align: center;
-        line-height: 1;
-        width: 100%;
-        max-width: 820px;
-        margin-left: auto;
-        margin-right: auto;
-        box-sizing: border-box;
-      }
-      .title h1 {
-        margin: 0 0 0.5em 0;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        hyphens: auto;
-      }
-      .date {
-        margin-bottom: 0.5em;
-        color: rgb(var(--gray));
-      }
-      .last-updated-on {
-        font-style: italic;
-        font-size: 1rem;
-        color: #969696;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #333333;
       }
 
       .tags {
         display: flex;
+        gap: 8px;
+        margin-top: 40px;
         flex-wrap: wrap;
-        gap: 0.5rem;
-        margin: 1rem 0;
-        justify-content: center;
       }
 
       .tag {
-        background: linear-gradient(
-          135deg,
-          var(--accent) 0%,
-          var(--accent-dark) 100%
-        );
-        color: white;
-        padding: 0.45rem 1rem;
-        border-radius: 1rem;
-        font-size: 0.8rem;
-        font-weight: 500;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
+        background: transparent;
+        color: #a89984;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        border: 1px solid #a89984;
       }
 
-      .tag:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(var(--accent), 0.3);
-        color: white;
+      .tag::before {
+        content: "";
+      }
+
+      .footer {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #333333;
+        color: #787878;
+        font-size: 12px;
+      }
+
+      .last-updated-on {
+        font-style: italic;
+        font-size: 14px;
+        color: #787878;
+        margin-top: 20px;
       }
 
       @media (max-width: 768px) {
-        .prose {
-          padding: 0.5em;
+        body {
+          padding: 10px;
         }
-        .title {
-          padding: 0.5em 0;
-        }
-        .title h1 {
-          font-size: 2rem;
-          line-height: 1.2;
-        }
-      }
 
-      @media (max-width: 480px) {
-        .prose {
-          padding: 0.25em;
+        .terminal-body {
+          padding: 16px;
         }
-        .title h1 {
-          font-size: 1.75rem;
-        }
-        .tags {
-          margin: 0.5rem 0;
-        }
-        .tag {
-          font-size: 0.7rem;
-          padding: 0.2rem 0.6rem;
+
+        h1 {
+          font-size: 22px;
         }
       }
     </style>
   </head>
 
   <body>
-    <Header />
-    <main>
-      <article>
-        <div class="hero-image">
+    <div class="github-header">
+      <div class="repo-info">
+        <svg class="repo-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path
+            d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"
+          >
+          </path>
+        </svg>
+        <a href="/" class="repo-name">MDG Dev Blog</a>
+      </div>
+      <div class="repo-meta">
+        <span>blog@mdgdev.local</span>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="github-tabs">
+        <a href="/blog" class="github-tab active">Posts</a>
+        <a href="/about" class="github-tab">About</a>
+        <a href="/blog" class="github-tab">Archive</a>
+      </div>
+
+      <div class="terminal-header">
+        <div class="file-path">
+          <span class="file-icon">📄</span>
+          <span
+            >{
+              title
+                .toLowerCase()
+                .replace(/\s+/g, "-")
+                .replace(/[^\w\-]/g, "")
+            }</span
+          >
+        </div>
+        <div class="file-actions">
+          <button class="action-button">Share</button>
+          <button class="action-button">Subscribe</button>
+        </div>
+      </div>
+
+      <div class="terminal-body">
+        <article>
+          <div class="commit-info">
+            <div class="author-avatar">M</div>
+            <span class="commit-message">Published by blog@mdgdev</span>
+            <span class="commit-hash"><FormattedDate date={pubDate} /></span>
+          </div>
+
+          <h1>{title}</h1>
+
+          <div class="meta">
+            <span class="meta-item"
+              >Published: <FormattedDate date={pubDate} /></span
+            >
+            {
+              updatedDate && (
+                <span class="meta-item">
+                  Updated: <FormattedDate date={updatedDate} />
+                </span>
+              )
+            }
+          </div>
+
           {
             heroImage && (
-              <Image width={1020} height={510} src={heroImage} alt="" />
+              <Image
+                class="hero-image"
+                width={900}
+                height={400}
+                src={heroImage}
+                alt={title}
+              />
             )
           }
-        </div>
-        <div class="prose">
-          <div class="title">
-            <div class="date">
-              <FormattedDate date={pubDate} />
-            </div>
-            <h1>{title}</h1>
+
+          <div class="content">
+            <slot />
+
             {
-              tags && tags.length > 0 && (
-                <div class="tags">
-                  {tags.map((tag: string) => (
-                    <span class="tag">{tag}</span>
-                  ))}
+              updatedDate && (
+                <div class="last-updated-on">
+                  Last updated on <FormattedDate date={updatedDate} />
                 </div>
               )
             }
-            <hr />
           </div>
 
-          <slot />
           {
-            updatedDate && (
-              <div class="last-updated-on">
-                Last updated on <FormattedDate date={updatedDate} />
+            tags && tags.length > 0 && (
+              <div class="tags">
+                {tags.map((tag: string) => (
+                  <span class="tag">{tag}</span>
+                ))}
               </div>
             )
           }
-        </div>
-      </article>
-    </main>
-    <Footer />
+
+          <div class="footer">
+            <p>
+              EOF - Last modified: <FormattedDate
+                date={updatedDate || pubDate}
+              /> UTC
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
   </body>
 </html>
