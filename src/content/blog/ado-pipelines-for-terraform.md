@@ -37,7 +37,7 @@ I have lost my fear of the complexity involved in implementing pipelines in Azur
 
 My next step will be to define a robust template to serve as a baseline for all future Terraform pipelines, and to start implementing more complex scenarios with multiple environments and configurations.
 
-# Key Takeaways
+## Key Takeaways
 
 - Don't be afraid of the unknown. Embrace it as an opportunity to learn and grow.
 - Start small and keep it simple. This approach can help you get things done without feeling overwhelmed.
