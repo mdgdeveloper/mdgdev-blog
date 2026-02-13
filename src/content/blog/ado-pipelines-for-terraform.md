@@ -1,8 +1,8 @@
 ---
 title: 'Day 1: Overcoming the Fear of the Unknown: My First Terraform Pipeline in Azure DevOps'
 description: 'My first experience implementing Terraform pipelines in Azure DevOps, and how I&apos;m applying the &quot;keep it simple&quot; approach to overcome the fear of the unknown.'
-pubDate: '2025-08-15'
-updatedDate: '2025-08-15'
+pubDate: '2026-02-13'
+updatedDate: '2026-02-13'
 heroImage: '../../assets/blog-pipelines.jpg'
 tags: ['Azure DevOps', 'Terraform', 'Pipelines', 'Infrastructure as Code', 'Automation']
 ---
