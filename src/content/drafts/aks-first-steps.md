@@ -7,3 +7,12 @@ heroImage: '../../assets/blog-aks-01.jpg'
 tags: ['Kubernetes', 'Azure Kubernetes Service', 'AKS', 'Container Orchestration', 'Cloud Computing']
 ---
 
+These are my quick notes for the starting point of my journey into Kubernetes and Azure Kubernetes Service (AKS). 
+
+
+## Stack
+
+First the stack I decided to use for this learning journey. I wanted to start testing right after getting the bare basis, so I decided to go for a local lab. 
+
+- **kind**: Which allows to create a Kubernetes cluster locally
+- **kubectl**: T
