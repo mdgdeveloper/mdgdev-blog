@@ -3,7 +3,7 @@ title: 'Beating the AI Impostor Syndrome: Embracing the Future of Work'
 description: 'Exploring the challenges and strategies for overcoming AI impostor syndrome in the modern workplace.'
 pubDate: '2026-03-18'
 updatedDate: '2026-03-20'
-heroImage: '../../assets/blog-ai-impostor-syndrome.jpg'
+heroImage: '../../assets/blog-ai-impostor-syndrome.png'
 tags: ['AI', 'Impostor Syndrome', 'Future of Work', 'Career Development', 'Personal Growth', 'Mental Health']
 ---
 
