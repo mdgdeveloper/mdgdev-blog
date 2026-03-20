@@ -4,7 +4,7 @@ description: 'Exploring the challenges and strategies for overcoming AI impostor
 pubDate: '2026-03-18'
 updatedDate: '2026-03-20'
 heroImage: '../../assets/blog-ai-impostor-syndrome.jpg'
-tags: ['AI', 'Impostor Syndrome', 'Future of Work', 'Career Development', 'Personal Growth']
+tags: ['AI', 'Impostor Syndrome', 'Future of Work', 'Career Development', 'Personal Growth', 'Mental Health']
 ---
 
 Note: This article was written by a human, but it was supported by AI tools to enhance the writing process. The insights and perspectives shared here are based on my personal experiences and reflections on the topic of AI impostor syndrome.
